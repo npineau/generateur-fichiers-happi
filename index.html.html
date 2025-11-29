@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de noms de fichiers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+    <div class="max-w-3xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <h1 class="text-3xl font-bold text-gray-800">Générateur de noms de fichiers</h1>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- Type de document -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Type de document *
+                    </label>
+                    <select id="documentType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <option value="">-- Sélectionnez un type --</option>
+                        <option value="fiche-animal">Fiche animal</option>
+                        <option value="fiche-veto">Fiche vétérinaire</option>
+                        <option value="fiche-traitement">Fiche de traitement</option>
+                        <option value="prise-sang">Prise de sang</option>
+                        <option value="radio">Radiographie</option>
+                        <option value="fiche-comportement">Fiche d'appréciation de comportement</option>
+                        <option value="contrat">Contrat d'adoption</option>
+                        <option value="questions">Questions à se poser avant adoption</option>
+                        <option value="permis">Permis de détention d'un animal</option>
+                        <option value="cession">Déclaration de cession</option>
+                        <option value="catdog-id">CAT ID ou DOG ID de l'abandonneur</option>
+                    </select>
+                </div>
+
+                <!-- Nom de l'animal -->
+                <div id="animalNameDiv">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Nom de l'animal ou NOM Prénom du membre *
+                    </label>
+                    <input type="text" id="animalName" placeholder="Ex: Médor" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                </div>
+
+                <!-- Numéro Happi -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Numéro Happi *
+                    </label>
+                    <input type="text" id="happiNumber" placeholder="Ex: 12345" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                </div>
+
+                <!-- NOM Prénom -->
+                <div id="fullNameDiv" style="display: none;">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        NOM Prénom *
+                    </label>
+                    <input type="text" id="fullName" placeholder="Ex: DUPONT Jean" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                </div>
+
+                <!-- Numéro de contrat -->
+                <div id="contractNumberDiv" style="display: none;">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Numéro de contrat *
+                    </label>
+                    <input type="text" id="contractNumber" placeholder="Ex: XXX" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                </div>
+
+                <!-- Date -->
+                <div id="dateDiv" style="display: none;">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Date *
+                    </label>
+                    <input type="date" id="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                </div>
+            </div>
+
+            <!-- Résultat généré -->
+            <div id="resultDiv" style="display: none;" class="mt-8 p-6 bg-indigo-50 rounded-lg border-2 border-indigo-200">
+                <h2 class="text-lg font-semibold text-gray-800 mb-3">Nom du fichier généré :</h2>
+                <div class="flex items-center gap-3">
+                    <div class="flex-1 bg-white px-4 py-3 rounded-lg border border-indigo-300 font-mono text-sm break-all" id="generatedFilename"></div>
+                    <button onclick="copyToClipboard()" class="flex items-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                        <svg id="copyIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                        </svg>
+                        <span id="copyText">Copier</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bouton Reset -->
+            <div class="mt-6 flex justify-end">
+                <button onclick="resetForm()" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                    Réinitialiser
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="mt-6 bg-white rounded-lg shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">Instructions :</h3>
+            <ul class="space-y-2 text-sm text-gray-600">
+                <li>• Sélectionnez d'abord le type de document</li>
+                <li>• Remplissez les champs requis (marqués d'un *)</li>
+                <li>• Le nom du fichier se génère automatiquement en temps réel</li>
+                <li>• Cliquez sur "Copier" pour copier le nom dans le presse-papiers</li>
+                <li>• Utilisez ce nom pour nommer vos fichiers dans votre système de gestion documentaire</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Éléments du DOM
+        const documentType = document.getElementById('documentType');
+        const animalName = document.getElementById('animalName');
+        const happiNumber = document.getElementById('happiNumber');
+        const fullName = document.getElementById('fullName');
+        const contractNumber = document.getElementById('contractNumber');
+        const dateInput = document.getElementById('date');
+        
+        const animalNameDiv = document.getElementById('animalNameDiv');
+        const fullNameDiv = document.getElementById('fullNameDiv');
+        const contractNumberDiv = document.getElementById('contractNumberDiv');
+        const dateDiv = document.getElementById('dateDiv');
+        const resultDiv = document.getElementById('resultDiv');
+        const generatedFilename = document.getElementById('generatedFilename');
+
+        // Écouteurs d'événements
+        documentType.addEventListener('change', updateFields);
+        animalName.addEventListener('input', generateFilename);
+        happiNumber.addEventListener('input', generateFilename);
+        fullName.addEventListener('input', generateFilename);
+        contractNumber.addEventListener('input', generateFilename);
+        dateInput.addEventListener('change', generateFilename);
+
+        function updateFields() {
+            const type = documentType.value;
+            
+            // Masquer tous les champs conditionnels
+            animalNameDiv.style.display = 'block';
+            fullNameDiv.style.display = 'none';
+            contractNumberDiv.style.display = 'none';
+            dateDiv.style.display = 'none';
+            
+            // Afficher les champs nécessaires
+            if (type === 'questions' || type === 'permis') {
+                fullNameDiv.style.display = 'block';
+                animalNameDiv.style.display = 'none';
+            }
+            
+            if (type === 'contrat') {
+                contractNumberDiv.style.display = 'block';
+            }
+            
+            if (type === 'permis') {
+                dateDiv.style.display = 'block';
+            }
+            
+            generateFilename();
+        }
+
+        function generateFilename() {
+            const type = documentType.value;
+            
+            if (!type) {
+                resultDiv.style.display = 'none';
+                return;
+            }
+            
+            let filename = '';
+            const animal = animalName.value || '[Nom]';
+            const happi = happiNumber.value || '[Happi]';
+            const name = fullName.value || '[NOM Prénom]';
+            const contract = contractNumber.value || '[XXX]';
+            const date = dateInput.value || '[AAAA-MM-JJ]';
+            
+            switch (type) {
+                case 'fiche-animal':
+                    filename = `Fiche animal-1_${animal}_${happi}`;
+                    break;
+                case 'fiche-veto':
+                    filename = `Fiche VETO-1_${animal}_${happi}`;
+                    break;
+                case 'fiche-traitement':
+                    filename = `Fiche médicaments-1_${animal}_${happi}`;
+                    break;
+                case 'prise-sang':
+                    filename = `Prise de sang-1_${animal}_${happi}`;
+                    break;
+                case 'radio':
+                    filename = `Radio-1_${animal}_${happi}`;
+                    break;
+                case 'fiche-comportement':
+                    filename = `Fiche appréciation-1_${animal}_${happi}`;
+                    break;
+                case 'contrat':
+                    filename = `Contrat-${contract}_${animal}_${happi}`;
+                    break;
+                case 'questions':
+                    filename = `Questions à se poser avant adoption_${name}_${happi}`;
+                    break;
+                case 'permis':
+                    filename = `Permis Détention Animal_${date}_${name}_${happi}`;
+                    break;
+                case 'cession':
+                    filename = `Déclaration de cession Animal_${animal}_${happi}`;
+                    break;
+                case 'catdog-id':
+                    filename = `CAT/DOG ID_${animal}_${happi}`;
+                    break;
+            }
+            
+            generatedFilename.textContent = filename;
+            resultDiv.style.display = 'block';
+        }
+
+        function copyToClipboard() {
+            const text = generatedFilename.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const copyText = document.getElementById('copyText');
+                const copyIcon = document.getElementById('copyIcon');
+                
+                copyText.textContent = 'Copié !';
+                copyIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
+                
+                setTimeout(() => {
+                    copyText.textContent = 'Copier';
+                    copyIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>';
+                }, 2000);
+            });
+        }
+
+        function resetForm() {
+            documentType.value = '';
+            animalName.value = '';
+            happiNumber.value = '';
+            fullName.value = '';
+            contractNumber.value = '';
+            dateInput.value = '';
+            resultDiv.style.display = 'none';
+            updateFields();
+        }
+    </script>
+</body>
+</html>
